@@ -1,0 +1,10 @@
+.next
+.node_modules
+.github
+.VSCodeCounter
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.gitignore
+Dockerfile

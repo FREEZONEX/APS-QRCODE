@@ -4,3 +4,15 @@
   outline: 1px solid var(--cds-button-primary, #0f62fe);
   outline-offset: -1px;
 }
+
+.cds--inline-notification {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  block-size: auto;
+  color: var(--cds-text-inverse, #ffffff);
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-block-size: 3rem;
+  min-inline-size: 18rem;
+}
