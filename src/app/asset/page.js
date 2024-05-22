@@ -16,6 +16,7 @@ export default function Home() {
   const [incommingMessages, setIncommingMessages] = useState([]);
   const [assetName, setAssetName] = useState('');
   const [assetDescription, setAssetDescription] = useState('');
+  const [iframeAddress, setIframeAddress] = useState('');
   const [cardContent, setCardContent] = useState([]);
   const [tableContent, setTableContent] = useState([]);
   const incommingMessageHandlers = useRef([
@@ -42,6 +43,8 @@ export default function Home() {
           setAssetName(value);
         } else if (key === 'assetDescription') {
           setAssetDescription(value);
+        } else if (key === 'iframeAddress') {
+          setIframeAddress(value);
         } else {
           kvSingle.push({ key, value });
         }
@@ -103,7 +106,7 @@ export default function Home() {
           </Heading>
           <div className="mb-2 flex justify-center">
             <iframe
-              src="https://lumalabs.ai/embed/ade32a6a-9e7b-45d7-bf40-767248a76950?mode=sparkles&background=%23ffffff&color=%23000000&showTitle=true&loadBg=true&logoPosition=bottom-left&infoPosition=bottom-right&cinematicVideo=undefined&showMenu=false"
+              src={iframeAddress}
               className="w-full"
               height="500"
               frameborder="0"
