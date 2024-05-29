@@ -1,6 +1,6 @@
-import type { MqttClient, IClientOptions } from "mqtt";
-import MQTT from "mqtt";
-import { useEffect, useRef } from "react";
+import type { MqttClient, IClientOptions } from 'mqtt';
+import MQTT from 'mqtt';
+import { useEffect, useRef } from 'react';
 
 interface useMqttProps {
   uri: string;
@@ -12,7 +12,7 @@ interface useMqttProps {
 function useMqtt({
   uri,
   options = {},
-  topicHandlers = [{ topic: "", handler: ({ topic, payload, packet }) => {} }],
+  topicHandlers = [{ topic: '', handler: ({ topic, payload, packet }) => {} }],
   onConnectedHandler = (client) => {},
 }: useMqttProps) {
   const clientRef = useRef<MqttClient | null>(null);
@@ -23,22 +23,22 @@ function useMqtt({
     if (!topicHandlers || topicHandlers.length === 0) return () => {};
 
     try {
-      console.log("connect mqtt");
+      console.log('connect mqtt');
       clientRef.current = MQTT.connect(uri);
       // options
       //   ? MQTT.connect(uri, options)
       //   : MQTT.connect(uri);
     } catch (error) {
-      console.error("error", error);
+      console.error('error', error);
     }
 
     const client = clientRef.current;
-    console.log("client", client);
+    console.log('client', client);
     topicHandlers.forEach((th) => {
       client?.subscribe(th.topic);
-      console.log("subscribed to", th.topic);
+      console.log('subscribed to', th.topic);
     });
-    client?.on("message", (topic: string, rawPayload: any, packet: any) => {
+    client?.on('message', (topic: string, rawPayload: any, packet: any) => {
       const th = topicHandlers.find((t) => t.topic === topic);
       let payload;
       try {
@@ -49,12 +49,12 @@ function useMqtt({
       if (th) th.handler({ topic, payload, packet });
     });
 
-    client?.on("connect", () => {
-      console.log("connecting...");
+    client?.on('connect', () => {
+      console.log('connecting...');
       if (onConnectedHandler) onConnectedHandler(client);
     });
-    client?.on("error", (err) => {
-      console.error("Connection error: ", err);
+    client?.on('error', (err) => {
+      console.error('Connection error: ', err);
       client.end();
     });
 
