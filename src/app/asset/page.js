@@ -92,11 +92,9 @@ export default function Home() {
     console.log(kvSingle, kvArray);
   };
   useMqtt({
-    uri: 'ws://supcononenorth.fortiddns.com:30885/mqtt',
+    uri: 'wss://supos.app:8084/mqtt',
     options: {
-      // username: process.env.NEXT_PUBLIC_MQTT_USERNAME,
-      // password: process.env.NEXT_PUBLIC_MQTT_PASSWORD,
-      clientId: 'client1',
+      clientId: `client_${Math.random().toString(16).substr(2, 8)}`,
     },
     topicHandlers: incommingMessageHandlers.current,
     onConnectedHandler: (client) => setMqttClient(client),
