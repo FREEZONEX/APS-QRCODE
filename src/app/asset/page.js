@@ -92,7 +92,7 @@ export default function Home() {
     console.log(kvSingle, kvArray);
   };
   useMqtt({
-    uri: 'ws://supos.app:8083/mqtt',
+    uri: 'wss://supos.app:8084/mqtt',
     options: {
       clientId: `client_${Math.random().toString(16).substr(2, 8)}`,
       //rejectUnauthorized: false, // Allow self-signed certificates (if any)
