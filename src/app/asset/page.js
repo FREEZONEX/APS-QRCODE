@@ -92,11 +92,14 @@ export default function Home() {
     console.log(kvSingle, kvArray);
   };
   useMqtt({
-    uri: 'ws://supcononenorth.fortiddns.com:30885/mqtt',
+    uri: 'ws://18.141.237.146:8083/mqtt',
     options: {
-      // username: process.env.NEXT_PUBLIC_MQTT_USERNAME,
-      // password: process.env.NEXT_PUBLIC_MQTT_PASSWORD,
-      clientId: 'client1',
+      clientId: `client_${Math.random().toString(16).substr(2, 8)}`,
+      //rejectUnauthorized: false, // Allow self-signed certificates (if any)
+      username: 'supcon',
+      password: 'vendor0233',
+      // rejectUnauthorized: false,
+      // ca: undefined,
     },
     topicHandlers: incommingMessageHandlers.current,
     onConnectedHandler: (client) => setMqttClient(client),

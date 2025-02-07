@@ -12,62 +12,64 @@ interface useMqttProps {
 function useMqtt({
   uri,
   options = {},
-  topicHandlers = [{ topic: '', handler: ({ topic, payload, packet }) => {} }],
+  topicHandlers = [],
   onConnectedHandler = (client) => {},
 }: useMqttProps) {
   const clientRef = useRef<MqttClient | null>(null);
 
   useEffect(() => {
-    console.log(clientRef.current);
-    // if (clientRef.current) return;
-    if (!topicHandlers || topicHandlers.length === 0) return () => {};
+    if (!uri || topicHandlers.length === 0) return;
 
+    console.log('Connecting to MQTT:', uri);
     try {
-      console.log('connect mqtt');
-      clientRef.current = MQTT.connect(uri);
-      // options
-      //   ? MQTT.connect(uri, options)
-      //   : MQTT.connect(uri);
+      clientRef.current = MQTT.connect(uri, options);  // ✅ 传入 options
     } catch (error) {
-      console.error('error', error);
+      console.error('❌ MQTT Connection Error:', error);
     }
 
     const client = clientRef.current;
-    console.log('client', client);
-    topicHandlers.forEach((th) => {
-      client?.subscribe(th.topic);
-      console.log('subscribed to', th.topic);
+
+    client?.on('connect', () => {
+      console.log('✅ Connected to MQTT broker');
+      if (onConnectedHandler) onConnectedHandler(client);
+
+      topicHandlers.forEach((th) => {
+        client?.subscribe(th.topic, (err) => {
+          if (!err) {
+            console.log('📡 Subscribed to', th.topic);
+          } else {
+            console.error('❌ Subscription error:', err);
+          }
+        });
+      });
     });
-    client?.on('message', (topic: string, rawPayload: any, packet: any) => {
-      const th = topicHandlers.find((t) => t.topic === topic);
+
+    client?.on('message', (topic, rawPayload, packet) => {
+      console.log(`📩 Received message from ${topic}`);
+      const handler = topicHandlers.find((t) => t.topic === topic);
       let payload;
       try {
         payload = JSON.parse(rawPayload);
       } catch {
         payload = rawPayload;
       }
-      if (th) th.handler({ topic, payload, packet });
+      if (handler) handler.handler({ topic, payload, packet });
     });
 
-    client?.on('connect', () => {
-      console.log('connecting...');
-      if (onConnectedHandler) onConnectedHandler(client);
-    });
     client?.on('error', (err) => {
-      console.error('Connection error: ', err);
+      console.error('❌ MQTT Connection Error:', err);
       client.end();
     });
 
     return () => {
+      console.log('Disconnecting from MQTT...');
       if (client) {
-        topicHandlers.forEach((th) => {
-          client.unsubscribe(th.topic);
-        });
+        topicHandlers.forEach((th) => client.unsubscribe(th.topic));
         client.end();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [uri, topicHandlers]);
+
 }
 
 export default useMqtt;
